@@ -1,0 +1,11 @@
+.brand:hover
+{
+    width: 33px;
+    height: 33px;
+    transition-duration: 0.2s;
+}
+
+.brand
+{
+    transition-duration: 0.2s;
+}

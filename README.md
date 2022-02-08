@@ -1,2 +1,2 @@
 # AlgoVis
-AlgoVis is algorithms visualization tool.
+Web app presenting different algorithms
