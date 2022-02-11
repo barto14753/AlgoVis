@@ -18,7 +18,7 @@ const Home = () =>
     return(
     <div>
         <div className="header">
-            <div class="header_about">
+            <div className="header_about">
                 <strong>AlgoVis</strong> is visualization tool for sorting, graph and pathfinding algorithms. 
                 Tool is fully interactive, enable changing parameters of visualization such as number of elements 
                 to sort or setting walls for pathfinding algorithms. You can read more in About section

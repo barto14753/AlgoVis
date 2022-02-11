@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import {Nav, Navbar, Button, Form, Col, Row} from "react-bootstrap";
 import './SortingSidebar.css'
 import sort from "./assets/sort.png";
 import bubble from "./assets/bubbles.png";
 import quick from "./assets/quick.png";
 import merge from "./assets/merge.png";
-import shuffle from "./assets/shuffle.png";
+import shuffle_img from "./assets/shuffle.png";
 import RangeSlider from 'react-bootstrap-range-slider';
-
+import { SortingContext } from "./Sorting";
+import { WindowContext } from "./App";
 
 
 const SortingSidebar = props => {
-    const [ elements, setElements ] = React.useState(20);
-    const [ step, setStep ] = React.useState(20);
+
+    const {elements, stepTime, setElements, setStepTime, shuffle} = useContext(SortingContext);
 
     return (
         <>
@@ -50,8 +51,8 @@ const SortingSidebar = props => {
                 </Nav.Item>
 
                 <Nav.Item>
-                    <Button variant="primary">
-                        <img src={shuffle} className="sidebar_img"></img>
+                    <Button variant="primary" onClick={shuffle} >
+                        <img src={shuffle_img} className="sidebar_img"></img>
                         Shuffle
                     </Button>
                 </Nav.Item>
@@ -85,12 +86,12 @@ const SortingSidebar = props => {
                         </Form.Label>
                         <Col xs="6">
                         <RangeSlider
-                            value={step}
-                            onChange={e => setStep(e.target.value)}
+                            value={stepTime}
+                            onChange={e => setStepTime(e.target.value)}
                         />
                         </Col>
                         <Col xs="5">
-                        <Form.Control value={step}/>
+                        <Form.Control value={stepTime}/>
                         </Col>
                         
                     </Form.Group>
