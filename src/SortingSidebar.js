@@ -13,7 +13,7 @@ import { WindowContext } from "./App";
 
 const SortingSidebar = props => {
 
-    const {elements, stepTime, setEl, setStepTime, shuffle} = useContext(SortingContext);
+    const {elements, stepTime, setEl, setStepTime, shuffle, bubblesort} = useContext(SortingContext);
 
     return (
         <>
@@ -30,7 +30,7 @@ const SortingSidebar = props => {
                 <strong>Sorting</strong>
                 </Navbar.Brand>
                 <Nav.Item className="first_el" >
-                    <Button variant="success">
+                    <Button variant="success" onClick={bubblesort}>
                         <img src={bubble} className="sidebar_img"></img>
                         Bubblesort
                     </Button>
@@ -66,6 +66,7 @@ const SortingSidebar = props => {
                         </Form.Label>
                         <Col xs="6">
                         <RangeSlider
+                            min={5}
                             value={elements}
                             onChange={e => setEl(e.target.value)}
                         />
@@ -86,8 +87,8 @@ const SortingSidebar = props => {
                         </Form.Label>
                         <Col xs="6">
                         <RangeSlider
-                            min={10}
-                            max={1000}
+                            min={0}
+                            max={500}
                             value={stepTime}
                             onChange={e => setStepTime(e.target.value)}
                         />

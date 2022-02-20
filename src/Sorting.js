@@ -10,10 +10,10 @@ import Konva from "konva";
 import { Stage, Layer, Rect } from "react-konva";
 
 const Normal = React.createContext("lightgreen");
-const Marked = React.createContext("red");
+const Marked = React.createContext("blue");
 
 const Node = (props) => {
-  const value = props.is_marked ? "red" : "lightgreen";
+  const value = props.is_marked ? "blue" : "lightgreen";
   return (
     <Rect x={props.x} y={props.y} width={props.width} height={props.height} fill={value} shadowBlur={5} />
   );
@@ -35,8 +35,8 @@ const Sorting = () =>
     const {window, setHome, setSorting, setGraphs, setPathfinding, setAbout} = useContext(WindowContext);
     const [canvasWidth, setCanvasWidth] = useState(1000);
     const [canvasHeight, setCanvasHeight] = useState(600);
-    const [elements, setElements] = useState(50);
-    const [stepTime, setStepTime] = useState(50);
+    const [elements, setElements] = useState(10);
+    const [stepTime, setStepTime] = useState(0);
     const [nodes, setNodes] = useState(new Array(elements));
     const [marked, setMarked] = useState(new Array(-1, -1));
     const [trigger, setTrigger] = useState(0);
@@ -86,15 +86,50 @@ const Sorting = () =>
         n[index1] = nodes[index2];
         n[index2] = tmp;
         setNodes(n);
-        console.log(nodes);
     }
+
+    const bubblesort = () => _bubblesort(0, 0, false);
+    const _bubblesort = (round, i, swap) => {
+        let index1 = i;
+        let index2 = i+1;
+        setMarked(new Array(index1, index2));
+        setTrigger(stepTime-1);
+
+        setTimeout(() => {
+
+            if (nodes[index1] > nodes[index2])
+            {
+                swap = true;
+                move(index1, index2);
+                setTrigger(stepTime-1);
+            }
+
+            setTimeout(() => {
+                setMarked(new Array(-1,-1));
+                setTrigger(stepTime+1);
+                i = (i+1)%(elements-1);
+                if (i == 0) 
+                {
+                    if (!swap) return;
+                    round += 1;
+                    swap = false;
+                    
+                }
+
+                if (round < elements || i < elements-1) setTimeout(() => {_bubblesort(round, i, swap)}, stepTime/3);
+                
+            }, stepTime/3)
+            
+        }, stepTime/3);
+    }
+
 
     const shuffle = () => _shuffle(elements/2);
     const _shuffle = (el) => {
-        console.log("Shuffle ", el);
         let index1 = getRandomInt(0, elements-1);
         let index2 = getRandomInt(0, elements-1);
         setMarked(new Array(index1, index2));
+        setTrigger(stepTime-1);
 
         setTimeout(() => {
             move(index1, index2);
@@ -111,7 +146,6 @@ const Sorting = () =>
     }
 
     let Nodes = () => {
-        console.log("Nodes: ", nodes);
         let n = nodes;
         return n.map((item, index) => {
             return <Node 
@@ -142,7 +176,7 @@ const Sorting = () =>
         <Row>
             <Col sm={4}>
                 <SortingContext.Provider
-                    value={{elements, stepTime, setEl, setStepTime, shuffle}}>
+                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort}}>
                     <SortingSidebar />
                 </SortingContext.Provider>
             </Col>
