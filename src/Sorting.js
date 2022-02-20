@@ -9,10 +9,11 @@ import SortingSidebar from "./SortingSidebar";
 import Konva from "konva";
 import { Stage, Layer, Rect } from "react-konva";
 
-const ThemeContext = React.createContext("lightgreen");
+const Normal = React.createContext("lightgreen");
+const Marked = React.createContext("red");
 
 const Node = (props) => {
-  const value = React.useContext(ThemeContext);
+  const value = props.is_marked ? "red" : "lightgreen";
   return (
     <Rect x={props.x} y={props.y} width={props.width} height={props.height} fill={value} shadowBlur={5} />
   );
@@ -35,11 +36,33 @@ const Sorting = () =>
     const [canvasWidth, setCanvasWidth] = useState(1000);
     const [canvasHeight, setCanvasHeight] = useState(600);
     const [elements, setElements] = useState(50);
-    const [stepTime, setStepTime] = useState(10);
+    const [stepTime, setStepTime] = useState(50);
     const [nodes, setNodes] = useState(new Array(elements));
+    const [marked, setMarked] = useState(new Array(-1, -1));
+    const [trigger, setTrigger] = useState(0);
 
 
     const widthRef = React.createRef();
+
+    const setEl = (count) => {
+        let newNodes = new Array(count);
+        let j = 0;
+        for (let i=0; i<nodes.length; i++)
+        {
+            if (nodes[i] <= count)
+            {
+                newNodes[j] = nodes[i];
+                j++;
+            }
+        }
+        
+        for (let i=nodes.length; i<count; i++)
+        {
+            newNodes[i] = i;
+        }
+        setElements(count);
+        setNodes(newNodes);
+    }
 
 
     setInterval(() => {
@@ -55,30 +78,51 @@ const Sorting = () =>
 
     }, 1000);
 
-    for (let i=0; i<elements; i++) nodes[i] = i/elements;
+    if (!nodes[0]) for(let i=0; i<elements; i++) nodes[i] = i+1;
 
     const move = (index1, index2) => {
         let n = nodes;
-        n[index1] = 0;
-        n[index2] = 0;
+        let tmp = n[index1];
+        n[index1] = nodes[index2];
+        n[index2] = tmp;
         setNodes(n);
-    }
-
-    const shuffle = () => {
-        for (let i=0; i<10; i++)
-        {
-            console.log("Shuffle")
-            move(getRandomInt(0, elements-1), getRandomInt(0, elements-1));
-            setCanvasWidth(canvasWidth+0.01);
-        }
-    }
-
-    const Nodes = () => {
-        let q = nodes.map((item, index) => {
-            return <Node x={canvasWidth*((index+1)/elements)} y={canvasHeight*(1-item)} width={canvasWidth/(elements*2)} height={canvasHeight*item}/>
-        });
         console.log(nodes);
-        return q;
+    }
+
+    const shuffle = () => _shuffle(elements/2);
+    const _shuffle = (el) => {
+        console.log("Shuffle ", el);
+        let index1 = getRandomInt(0, elements-1);
+        let index2 = getRandomInt(0, elements-1);
+        setMarked(new Array(index1, index2));
+
+        setTimeout(() => {
+            move(index1, index2);
+            setTrigger(stepTime-1);
+            setTimeout(() => {
+                setMarked(new Array(-1,-1));
+                if (el > 0) setTimeout(() => {_shuffle(el-1)}, stepTime/3);
+                setTrigger(stepTime+1);
+                
+            }, stepTime/3)
+            
+        }, stepTime/3);
+
+    }
+
+    let Nodes = () => {
+        console.log("Nodes: ", nodes);
+        let n = nodes;
+        return n.map((item, index) => {
+            return <Node 
+                x={(canvasWidth*1)*((index)/elements) + 1} 
+                y={(canvasHeight*1)*(1-item/elements)} 
+                width={(canvasWidth*0.9)/(elements*2)} 
+                height={(canvasHeight*1)*(item/elements)}
+                is_marked={marked.includes(index)}
+            />
+        });
+        
 
     }
 
@@ -94,12 +138,11 @@ const Sorting = () =>
     }
 
     return(
-    <Container>
+    <Container className="sorting_container">
         <Row>
             <Col sm={4}>
                 <SortingContext.Provider
-                    value={{elements, stepTime, setElements, setStepTime, shuffle}}>
-                        {canvasHeight}
+                    value={{elements, stepTime, setEl, setStepTime, shuffle}}>
                     <SortingSidebar />
                 </SortingContext.Provider>
             </Col>

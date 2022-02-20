@@ -13,7 +13,7 @@ import { WindowContext } from "./App";
 
 const SortingSidebar = props => {
 
-    const {elements, stepTime, setElements, setStepTime, shuffle} = useContext(SortingContext);
+    const {elements, stepTime, setEl, setStepTime, shuffle} = useContext(SortingContext);
 
     return (
         <>
@@ -67,7 +67,7 @@ const SortingSidebar = props => {
                         <Col xs="6">
                         <RangeSlider
                             value={elements}
-                            onChange={e => setElements(e.target.value)}
+                            onChange={e => setEl(e.target.value)}
                         />
                         </Col>
                         <Col xs="5">
@@ -86,6 +86,8 @@ const SortingSidebar = props => {
                         </Form.Label>
                         <Col xs="6">
                         <RangeSlider
+                            min={10}
+                            max={1000}
                             value={stepTime}
                             onChange={e => setStepTime(e.target.value)}
                         />
