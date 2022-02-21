@@ -63,6 +63,11 @@ const Sorting = () =>
         setNodes(newNodes);
     }
 
+    const reset = () => {
+        for(let i=0; i<elements; i++) nodes[i] = i+1;
+        setRunning(false);
+        setTrigger("reset");
+    }
 
     setInterval(() => {
         if (widthRef.current != null)
@@ -80,7 +85,7 @@ const Sorting = () =>
     if (!nodes[0])
     {
         console.log("RESTART", nodes);
-        for(let i=0; i<elements; i++) nodes[i] = i+1;
+        reset();
     }
 
     const move = (index1, index2) => {
@@ -97,6 +102,7 @@ const Sorting = () =>
 
     }
     const _bubblesort = (round, i, swap) => {
+
         let index1 = i;
         let index2 = i+1;
         setMarked(new Array(index1, index2));
@@ -138,6 +144,7 @@ const Sorting = () =>
         _quicksort(trees);
     }
     const _quicksort = (trees) => {
+
         let tree = trees.pop();
         let start = tree[0];
         let finish = tree[1];
@@ -206,6 +213,8 @@ const Sorting = () =>
     }
 
     const _insertionsort = (round, i) => {
+        if (!running) return;
+
         let index1 = i;
         let index2 = i-1;
         setMarked(new Array(index1, index2));
@@ -286,7 +295,7 @@ const Sorting = () =>
         <Row>
             <Col sm={4}>
                 <SortingContext.Provider
-                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort, insertionsort}}>
+                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort, insertionsort, reset}}>
                     <SortingSidebar />
                 </SortingContext.Provider>
             </Col>

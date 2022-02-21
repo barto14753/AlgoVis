@@ -13,7 +13,7 @@ import { WindowContext } from "./App";
 
 const SortingSidebar = props => {
 
-    const {elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort, insertionsort} = useContext(SortingContext);
+    const {elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort, insertionsort, reset} = useContext(SortingContext);
 
     return (
         <>
@@ -56,6 +56,8 @@ const SortingSidebar = props => {
                         Shuffle
                     </Button>
                 </Nav.Item>
+
+
 
 
                 <Nav.Item>

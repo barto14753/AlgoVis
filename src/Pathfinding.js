@@ -173,6 +173,18 @@ const Pathfinding = () =>
         return queue;
     }
 
+    const move_if_poss_astar = (queue, index, parent) => {
+        if (can_move_to(index))
+        {
+            setPending(add_val(pending, index));
+            queue.push([count_distance(index, finish), index]);
+            nodes[index] = parent;
+            setTrigger(parent);
+        }
+
+        return queue;
+    }
+
     const showPath = () => {
         console.log("Show path");
         let index = finish;
@@ -224,12 +236,53 @@ const Pathfinding = () =>
 
     }
 
-    const a_star = () => {
+    const count_distance = (index1, index2) => {
+        let x1 = Math.floor(index1/elements);
+        let x2 = Math.floor(index2/elements);
+        let y1 = index1 % elements;
+        let y2 = index2 % elements;
 
+        return Math.max(Math.abs(x1-x2), Math.abs(y1-y2));
+    }
+    const a_star = () => {
+        if (start < 0 || finish < 0) return;
+        let q = new Array();
+
+        
+        q.push([count_distance(start, finish), start]);
+        _a_star(q);
     }
 
-    const _a_star = () => {
+    const _a_star = (queue) => {
+        let el = queue.shift();
+        let index = el[1];
+        if (index == finish) 
+        {
+            showPath();
+            return;
+        }
 
+        setPending(remove_val(pending, index));
+        setUsed(add_val(used, index));
+        
+
+        let up = index - elements;
+        let down = index + elements;
+        let left = index - 1;
+        let right = index + 1;
+
+        queue = move_if_poss_astar(queue, up, index);
+        queue = move_if_poss_astar(queue, down, index);
+        if (index % elements != 0) queue = move_if_poss_astar(queue, left, index);
+        if ((index+1) % elements != 0) queue = move_if_poss_astar(queue, right, index);
+        queue.sort();
+        // queue.reverse();
+        console.log(queue);
+    
+        setTimeout(() => {
+            if (queue.length > 0) _a_star(queue);
+            else console.log("empty");
+        }, 100);
     }
 
     let Board = () => {
