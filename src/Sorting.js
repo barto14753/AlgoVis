@@ -21,7 +21,7 @@ const Node = (props) => {
 
 const getRandomInt = (min, max) => {
     min = Math.ceil(min);
-    max = Math.floor(max);
+    max = Math.floor(max+1);
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
@@ -78,7 +78,11 @@ const Sorting = () =>
 
     }, 1000);
 
-    if (!nodes[0]) for(let i=0; i<elements; i++) nodes[i] = i+1;
+    if (!nodes[0])
+    {
+        console.log("RESTART", nodes);
+        for(let i=0; i<elements; i++) nodes[i] = i+1;
+    }
 
     const move = (index1, index2) => {
         let n = nodes;
@@ -121,6 +125,71 @@ const Sorting = () =>
             }, stepTime/3)
             
         }, stepTime/3);
+    }
+
+    const quicksort = () => {
+        let trees = new Array();
+        trees.push(new Array(0, nodes.length-1, 0, 0));
+        _quicksort(trees);
+    }
+    const _quicksort = (trees) => {
+        let tree = trees.pop();
+        let start = tree[0];
+        let finish = tree[1];
+        let i = tree[2];
+        let pivot = tree[3];
+
+        if (start >= finish && trees.length > 0) setTimeout(() => {_quicksort(trees)}, stepTime/3)
+        else if (i == finish)
+        {
+
+            setMarked(new Array(pivot, finish));
+            setTrigger(stepTime-1);
+
+            setTimeout(() => {
+
+                move(pivot, finish);
+                setTrigger(stepTime-1);
+
+                setTimeout(() => {
+                    setMarked(new Array(-1,-1));
+                    setTrigger(stepTime+1);
+
+                    if (pivot > 0) trees.push(new Array(start, pivot-1, start, start));
+                    trees.push(new Array(pivot+1, finish, pivot+1, pivot+1));
+                    
+
+                    if (tree.length > 0) setTimeout(() => {_quicksort(trees)}, stepTime/3);
+                    
+                }, stepTime/3)
+                
+            }, stepTime/3);
+        }
+        else
+        {
+
+            setMarked(new Array(i, pivot));
+            setTrigger(stepTime-1);
+
+            setTimeout(() => {
+                if (nodes[i] < nodes[finish])
+                {
+                    move(i, pivot);
+                    pivot += 1;
+                    setTrigger(stepTime-1);
+                }
+                
+
+                setTimeout(() => {
+                    setMarked(new Array(-1,-1));
+                    setTrigger(stepTime+1);
+                    if (i < finish) trees.push(new Array(start, finish, i+1, pivot))
+                    if (trees.length > 0) setTimeout(() => {_quicksort(trees)}, stepTime/3);
+                    
+                }, stepTime/3)
+                
+            }, stepTime/3);
+        }
     }
 
 
@@ -176,7 +245,7 @@ const Sorting = () =>
         <Row>
             <Col sm={4}>
                 <SortingContext.Provider
-                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort}}>
+                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort}}>
                     <SortingSidebar />
                 </SortingContext.Provider>
             </Col>
