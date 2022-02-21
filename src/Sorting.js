@@ -193,6 +193,39 @@ const Sorting = () =>
     }
 
 
+    const insertionsort = () => {
+        _insertionsort(1,1)
+    }
+
+    const _insertionsort = (round, i) => {
+        let index1 = i;
+        let index2 = i-1;
+        console.log(index1, index2);
+        setMarked(new Array(index1, index2));
+        setTrigger(stepTime-1);
+
+        setTimeout(() => {
+
+            if (nodes[index1] < nodes[index2])
+            {
+                move(index1, index2);
+                setTrigger(stepTime-1);
+            }
+
+            setTimeout(() => {
+                setMarked(new Array(-1,-1));
+                setTrigger(stepTime+1);
+                if (i == 0) 
+                {
+                    if (round < nodes.length) setTimeout(() => {_insertionsort(round+1, round+1)}, stepTime/3);
+                }
+                else setTimeout(() => {_insertionsort(round, i-1)}, stepTime/3);
+                
+            }, stepTime/3)
+            
+        }, stepTime/3);
+    }
+
     const shuffle = () => _shuffle(elements/2);
     const _shuffle = (el) => {
         let index1 = getRandomInt(0, elements-1);
@@ -245,7 +278,7 @@ const Sorting = () =>
         <Row>
             <Col sm={4}>
                 <SortingContext.Provider
-                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort}}>
+                    value={{elements, stepTime, setEl, setStepTime, shuffle, bubblesort, quicksort, insertionsort}}>
                     <SortingSidebar />
                 </SortingContext.Provider>
             </Col>
