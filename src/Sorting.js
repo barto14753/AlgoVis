@@ -9,8 +9,6 @@ import SortingSidebar from "./SortingSidebar";
 import Konva from "konva";
 import { Stage, Layer, Rect } from "react-konva";
 
-const Normal = React.createContext("lightgreen");
-const Marked = React.createContext("blue");
 
 const Node = (props) => {
   const value = props.is_marked ? "blue" : "lightgreen";
@@ -40,11 +38,12 @@ const Sorting = () =>
     const [nodes, setNodes] = useState(new Array(elements));
     const [marked, setMarked] = useState(new Array(-1, -1));
     const [trigger, setTrigger] = useState(0);
-
+    const [running, setRunning] = useState(false);
 
     const widthRef = React.createRef();
 
     const setEl = (count) => {
+        if (running) return;
         let newNodes = new Array(count);
         let j = 0;
         for (let i=0; i<nodes.length; i++)
@@ -76,7 +75,7 @@ const Sorting = () =>
             }
         }
 
-    }, 1000);
+    }, 100);
 
     if (!nodes[0])
     {
@@ -92,7 +91,11 @@ const Sorting = () =>
         setNodes(n);
     }
 
-    const bubblesort = () => _bubblesort(0, 0, false);
+    const bubblesort = () => {
+        setRunning(true);
+        _bubblesort(0, 0, false);
+
+    }
     const _bubblesort = (round, i, swap) => {
         let index1 = i;
         let index2 = i+1;
@@ -121,6 +124,7 @@ const Sorting = () =>
                 }
 
                 if (round < elements || i < elements-1) setTimeout(() => {_bubblesort(round, i, swap)}, stepTime/3);
+                else setRunning(false);
                 
             }, stepTime/3)
             
@@ -128,6 +132,7 @@ const Sorting = () =>
     }
 
     const quicksort = () => {
+        setRunning(true);
         let trees = new Array();
         trees.push(new Array(0, nodes.length-1, 0, 0));
         _quicksort(trees);
@@ -160,6 +165,7 @@ const Sorting = () =>
                     
 
                     if (tree.length > 0) setTimeout(() => {_quicksort(trees)}, stepTime/3);
+                    else setRunning(false);
                     
                 }, stepTime/3)
                 
@@ -185,6 +191,7 @@ const Sorting = () =>
                     setTrigger(stepTime+1);
                     if (i < finish) trees.push(new Array(start, finish, i+1, pivot))
                     if (trees.length > 0) setTimeout(() => {_quicksort(trees)}, stepTime/3);
+                    else setRunning(false);
                     
                 }, stepTime/3)
                 
@@ -194,13 +201,13 @@ const Sorting = () =>
 
 
     const insertionsort = () => {
+        setRunning(true);
         _insertionsort(1,1)
     }
 
     const _insertionsort = (round, i) => {
         let index1 = i;
         let index2 = i-1;
-        console.log(index1, index2);
         setMarked(new Array(index1, index2));
         setTrigger(stepTime-1);
 
@@ -218,6 +225,7 @@ const Sorting = () =>
                 if (i == 0) 
                 {
                     if (round < nodes.length) setTimeout(() => {_insertionsort(round+1, round+1)}, stepTime/3);
+                    else setRunning(false);
                 }
                 else setTimeout(() => {_insertionsort(round, i-1)}, stepTime/3);
                 

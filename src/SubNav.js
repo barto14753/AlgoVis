@@ -25,10 +25,10 @@ const SubNav = () =>
                 <Nav.Link onClick={setSorting}>Sorting</Nav.Link>
             </Nav.Item>
             <Nav.Item >
-                <Nav.Link onClick={setGraphs}>Graphs</Nav.Link>
+                <Nav.Link onClick={setPathfinding}>Pathfinding</Nav.Link>
             </Nav.Item>
             <Nav.Item >
-                <Nav.Link onClick={setPathfinding}>Pathfinding</Nav.Link>
+                <Nav.Link onClick={setGraphs}>Graphs</Nav.Link>
             </Nav.Item>
             <Nav.Item >
                 <Nav.Link onClick={setAbout}>About</Nav.Link>
