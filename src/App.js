@@ -7,6 +7,7 @@ import Home from "./Home"
 import Sorting from "./Sorting"
 import Graphs from "./Graphs"
 import Pathfinding from './Pathfinding';
+import About from './About';
 import { Button } from 'react-bootstrap';
 import React, { useContext, createContext, useState } from "react";
 
@@ -48,6 +49,7 @@ function App() {
   const sorting = <Sorting/>
   const graphs = <Graphs/>
   const pathfinding = <Pathfinding/>
+  const about = <About/>
 
   return (
     <WindowContext.Provider
@@ -65,6 +67,9 @@ function App() {
         }
         {
           window == "pathfinding" ? pathfinding : <></>
+        }
+        {
+          window == "about" ? about : <></>
         }
         <Footer />
     </WindowContext.Provider>

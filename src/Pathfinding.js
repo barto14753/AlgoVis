@@ -276,7 +276,6 @@ const Pathfinding = () =>
         if (index % elements != 0) queue = move_if_poss_astar(queue, left, index);
         if ((index+1) % elements != 0) queue = move_if_poss_astar(queue, right, index);
         queue.sort();
-        // queue.reverse();
         console.log(queue);
     
         setTimeout(() => {
