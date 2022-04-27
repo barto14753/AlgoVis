@@ -6,7 +6,7 @@ Web app presenting different algorithms
  * Konva.js
 
 ## Demo
-Link: https://algo-vis-react.herokuapp.com
+
 <img width="1438" alt="Zrzut ekranu 2022-02-23 o 00 22 53" src="https://user-images.githubusercontent.com/56938330/155236505-ff33148b-b9d2-488b-b88a-0ec2fbb831fc.png">
 
 ## Sorting
